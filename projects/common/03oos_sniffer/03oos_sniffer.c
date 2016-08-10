@@ -15,6 +15,8 @@
 #include "sixtop.h"
 #include "processIE.h"
 #include "neighbors.h"
+#include "sf0.h"
+#include "openrandom.h"
 
 //=========================== defines =========================================
 
@@ -72,6 +74,7 @@ int mote_main(void) {
    scheduler_init();
    openserial_init();
    idmanager_init();
+   openrandom_init();
  
    // add callback functions radio
    radio_setStartFrameCb(cb_startFrame);
@@ -155,8 +158,11 @@ void cb_timer(void) {
 
 // ================================ task =======================================
 void task_uploadPacket(){
-    
-    openserial_printPacket(&(app_vars.packet[0]),app_vars.packet_len,app_vars.channel);
+    openserial_printSniffedPacket(
+        &(app_vars.packet[0]),
+        app_vars.packet_len,
+        app_vars.channel
+    );
 }
 // ================================= stubbing ==================================
 
@@ -181,6 +187,7 @@ void ieee154e_getAsn(uint8_t* array) {return;}
 void neighbors_updateMyDAGrankAndNeighborPreference(void) {return;}
 bool neighbors_getPreferredParentEui64(open_addr_t* neighbor){return TRUE;}
 void schedule_startDAGroot(void) {return;}
+void sf0_appPktPeriod(uint8_t numAppPacketsPerSlotFrame){return;}
 
 bool debugPrint_asn(void)       {return TRUE;}
 bool debugPrint_isSync(void)    {return TRUE;}

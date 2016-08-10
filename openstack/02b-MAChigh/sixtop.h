@@ -32,6 +32,9 @@
 // SF ID
 #define SFID_SF0  0
 
+// Default Ch. ID
+#define DEFAULT_CHANNEL_OFFSET 2
+
 enum sixtop_CommandID_num{
     SIXTOP_SOFT_CELL_REQ                = 0x00,
     SIXTOP_SOFT_CELL_RESPONSE           = 0x01,
@@ -66,7 +69,7 @@ typedef enum {
 typedef enum {
     SIX_HANDLER_NONE                    = 0x00, // when complete reservation, handler must be set to none
     SIX_HANDLER_MAINTAIN                = 0x01, // the handler is maintenance process
-    SIX_HANDLER_OTF                     = 0x02  // the handler is otf
+    SIX_HANDLER_SF0                     = 0x02  // the handler is otf
 } six2six_handler_t;
 
 //=========================== typedef =========================================

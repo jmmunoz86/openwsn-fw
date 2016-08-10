@@ -24,12 +24,6 @@ static const uint8_t infoStackName[] = "OpenWSN ";
 #define OPENWSN_VERSION_MINOR     9
 #define OPENWSN_VERSION_PATCH     0
 
-// golden image version and type
-#define GOLDEN_IMAGE_VERSION      2
-// define golden image type: only one can be used
-#define GD_TYPE_ROOT         1 // dagroot
-#define GD_TYPE_SNIFFER      2 // sniffer
-
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -89,13 +83,14 @@ enum {
 // warning: first 4 MSB of 2° octect may coincide with previous protocol number
 enum {
    //TCP
-   WKP_TCP_HTTP                        =    80,
-   WKP_TCP_ECHO                        =     7,
+   WKP_TCP_HTTP                        =      80,
+   WKP_TCP_ECHO                        =       7,
    //UDP
-   WKP_UDP_COAP                        =  5683,
-   WKP_UDP_ECHO                        =     7,
-   WKP_UDP_INJECT                      =  2000,
-   WKP_UDP_RINGMASTER                  = 15000,
+   WKP_UDP_COAP                        =    5683,
+   WKP_UDP_ECHO                        =       7,
+   WKP_UDP_INJECT                      =    2000,
+   WKP_UDP_RINGMASTER                  =   15000,
+   WKP_UDP_SERIALBRIDGE                =    2001,
 };
 
 //status elements
@@ -170,6 +165,7 @@ enum {
    COMPONENT_UINJECT                   = 0x24,
    COMPONENT_RRT                       = 0x25,
    COMPONENT_SECURITY                  = 0x26,
+   COMPONENT_USERIALBRIDGE             = 0x27,
 };
 
 /**
