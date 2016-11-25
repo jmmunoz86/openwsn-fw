@@ -25,13 +25,13 @@ uart_vars_t uart_vars;
 
 void uart_init() {
    
-    P5SEL                      =  0xc0;             //P5.6,7 = USCI_A1
-    UCA1CTL1                  |=  UCSWRST;           // **Put state machine in reset**
-    UCA1CTL1                  |=  UCSSEL_2;          // SMCLK
-    UCA1BR0 = 0xd9;                                  // ~25MHz/115200 = 217 = 0xd9
-    UCA1BR1 = 0;
-    UCA1MCTL |= UCBRS_1 + UCBRF_0;
-    UCA1CTL1 &= ~UCSWRST;                           // **Initialize USCI state machine**
+    P5SEL                       =  0xc0;             //P5.6,7 = USCI_A1
+    UCA1CTL1                   |=  UCSWRST;          // **Put state machine in reset**
+    UCA1CTL1                   |=  UCSSEL_2;         // SMCLK
+    UCA1BR0                     = 0xd9;              // ~25MHz/115200 = 217 = 0xd9
+    UCA1BR1                     = 0;
+    UCA1MCTL                   |= UCBRS_1 + UCBRF_0;
+    UCA1CTL1                   &= ~UCSWRST;          // **Initialize USCI state machine**
 
 }
 

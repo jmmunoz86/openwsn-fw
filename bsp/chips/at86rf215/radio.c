@@ -22,17 +22,20 @@ typedef struct {
     uint8_t                     rf09_isr;
     uint8_t                     rf24_isr;
     uint8_t                     bb0_isr;
-    uint8_t                     bb1_isr;    
+    uint8_t                     bb1_isr;
+    bool                        pps_check;
+    bool                        pps;
 } radio_vars_t;
 
 radio_vars_t radio_vars;
+volatile uint16_t PPS;
 
 //=========================== public ==========================================
 void radio_read_isr(uint8_t* rf09_isr);
 //===== admin
 
 void radio_init(void) {
-
+    PPS = 0;
     // clear variables
     memset(&radio_vars,0,sizeof(radio_vars_t));
    
@@ -46,11 +49,12 @@ void radio_init(void) {
     // change state
     radio_vars.state          = RADIOSTATE_RFOFF;
    
-    P1SEL &= (~BIT4); // Set P1.4 SEL as GPIO
-    P1DIR &= (~BIT4); // Set P1.4 SEL as Input
-    P1IES &= (~BIT4); // low to high edge
-    P1IFG &= (~BIT4); // Clear interrupt flag for P1.4
-    P1IE |= (BIT4); // Enable interrupt for P1.4
+    P1SEL &= ~BIT4 | ~BIT5; // Set P1.4 SEL as GPIO
+    P1DIR &= ~BIT4 | ~BIT5; // Set P1.4 SEL as Input
+    P1IES &= ~BIT4 | ~BIT5; // low to high edge
+    P1IFG &= ~BIT4 | ~BIT5; // Clear interrupt flag for P1.4
+    P1IE  |= (BIT4 | BIT5); // Enable interrupt for P1.4
+    
     //check part number and version
     if ((at86rf215_spiReadReg(RG_RF_PN) != 0x34) | (at86rf215_spiReadReg(RG_RF_VN) != 0x03)) {
       while(1); //UNKNOWN DEVICE, FINISH
@@ -62,22 +66,78 @@ void radio_init(void) {
     radio_read_isr(&radio_vars.rf09_isr);
 }
 
+void radio_reprogram(const registerSetting_t* modulation, uint8_t size){
+
+    // clear variables
+    memset(&radio_vars,0,sizeof(radio_vars_t));
+   
+    // change state
+    radio_vars.state          = RADIOSTATE_STOPPED;
+   
+    // reset radio
+    radio_reset();
+    at86rf215_spiStrobe(CMD_RF_TRXOFF);
+    while(at86rf215_status() != RF_STATE_TRXOFF);
+    // change state
+    radio_vars.state          = RADIOSTATE_RFOFF;
+
+    for(uint16_t i = 0; i < size; i++) {
+        at86rf215_spiWriteReg( modulation[i].addr, modulation[i].data);
+    };
+    radio_read_isr(&radio_vars.rf09_isr);
+}
+
+void radio_change_modulation_rx(){
+
+    switch(PPS){
+        case (5):
+            radio_reprogram(basic_settings_ofdm_1_mcs0, sizeof(basic_settings_ofdm_1_mcs0)/sizeof(registerSetting_t));
+            break;
+        case (80):
+            radio_reprogram(basic_settings_ofdm_2_mcs0, sizeof(basic_settings_ofdm_2_mcs0)/sizeof(registerSetting_t));
+            break;
+        case (220):
+            radio_reprogram(basic_settings_ofdm_3_mcs1, sizeof(basic_settings_ofdm_3_mcs1)/sizeof(registerSetting_t));
+            break;
+        case (370):
+            radio_reprogram(basic_settings_ofdm_4_mcs2, sizeof(basic_settings_ofdm_4_mcs2)/sizeof(registerSetting_t));
+            break;
+        case (520):
+            radio_reprogram(basic_settings_fsk_option1_FEC, sizeof(basic_settings_fsk_option1_FEC)/sizeof(registerSetting_t));
+            break;
+        case (640):
+            radio_reprogram(basic_settings_fsk_option2_FEC, sizeof(basic_settings_fsk_option2_FEC)/sizeof(registerSetting_t));
+            break;
+        case (710):
+            radio_reprogram(basic_settings_fsk_option1, sizeof(basic_settings_fsk_option1)/sizeof(registerSetting_t));
+            break;
+        case (780):
+            radio_reprogram(basic_settings_fsk_option2, sizeof(basic_settings_fsk_option2)/sizeof(registerSetting_t));
+            break;
+        case (820):
+            radio_reprogram(basic_settings_oqpsk_rate1, sizeof(basic_settings_oqpsk_rate1)/sizeof(registerSetting_t));
+            break;
+        default:
+            break;
+    }
+}
+
 void radio_change_size(uint16_t* size){
     static int i = 0;
     *size = sizes[i%4];
     i++;
 }
+/*
 void radio_change_modulation(){
     static int mod_list = 1;
     at86rf215_spiStrobe(CMD_RF_TRXOFF);
     while(at86rf215_status() != RF_STATE_TRXOFF);
     for(uint16_t i = 0; i < (sizeof(basic_settings_fsk_option1)/sizeof(registerSetting_t)); i++) {
         at86rf215_spiWriteReg( modulation_list[mod_list%5][i].addr, modulation_list[mod_list%5][i].data);
-        //at86rf215_spiWriteReg( basic_settings_fsk_option1[i].addr, basic_settings_fsk_option1[i].data);
         };
     radio_read_isr(&radio_vars.rf09_isr);
     mod_list++;
-}
+}*/
 
 void radio_setOverflowCb(radiotimer_compare_cbt cb) {
     radiotimer_setOverflowCb(cb);
@@ -157,6 +217,18 @@ void radio_rfOff(void) {
    
     // change state
     radio_vars.state = RADIOSTATE_RFOFF;
+}
+
+uint16_t radio_pps_value(void){
+    return PPS;
+}
+
+bool radio_pps_check(void){
+    return radio_vars.pps_check;
+}
+
+bool radio_pps(void){
+    return radio_vars.pps;
 }
 
 //===== TX
@@ -301,6 +373,11 @@ kick_scheduler_t radio_isr() {
             }
             break;
         case 12:
+            P1IFG &= ~(BIT5);
+            PPS++;
+            if (PPS == 5 || PPS == 75 || PPS == 215 || PPS == 365 || PPS == 515 || PPS == 635 || PPS == 705 || PPS == 775 || PPS == 815){
+                radio_vars.pps_check = TRUE;
+            }
             break;
         case 14:
             break;

@@ -18,6 +18,7 @@
 */
 
 #include "radiotimer.h"
+#include "at86rf215.h"
 
 //=========================== define ==========================================
 
@@ -55,6 +56,8 @@ typedef enum {
 
 // admin
 void     radio_init(void);
+//void     radio_reprogram(registerSetting_t* modulation, uint8_t size);
+void     radio_change_modulation_rx(void);
 void     radio_setOverflowCb(radiotimer_compare_cbt cb);
 void     radio_setCompareCb(radiotimer_compare_cbt cb);
 void     radio_setStartFrameCb(radiotimer_capture_cbt cb);
@@ -72,6 +75,7 @@ void     radio_rfOn(void);
 void     radio_rfOff(void);
 void     radio_change_modulation();
 void     radio_change_size(uint16_t* size);
+uint16_t radio_pps_value(void);
 // TX
 void     radio_loadPacket(uint8_t* packet, uint16_t len);
 void     radio_txEnable(void);

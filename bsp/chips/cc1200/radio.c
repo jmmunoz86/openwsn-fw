@@ -141,26 +141,21 @@ void radio_rfOff(void) {
 void radio_loadPacket(uint8_t* packet, uint16_t len) {
     //test 802.15.4g PHR. This has to be done by the MAC layer
     uint8_t PHR[2];
-    uint8_t aux;    
+    uint8_t aux;  
 
-    if (len<2048){
-        PHR[0]      = len/256;
-        PHR[1]      = len%256;
-        PHR[0]     |= 0x10; //FCS set, size 2 bytes
-        PHR[0]     &= 0x77; //no data whitening & no Mode Switch
-        *packet     = PHR[0];
-        *(packet+1) = PHR[1];
-        // change state
-        radio_vars.state = RADIOSTATE_LOADING_PACKET;
-        cc1200_spiStrobe( CC1200_SFTX, &radio_vars.radioStatusByte);
-        cc1200_spiWriteFifo(&radio_vars.radioStatusByte, packet, len, CC1200_FIFO_ADDR);
-        cc1200_spiReadReg(CC1200_NUM_TXBYTES, &radio_vars.radioStatusByte, &aux);
-        // change state
-        radio_vars.state = RADIOSTATE_PACKET_LOADED;
-    }else{
-    //error
-    }
-    
+    PHR[0]      = len/256;
+    PHR[1]      = len%256;
+    PHR[0]     |= 0x10; //FCS set, size 2 bytes
+    PHR[0]     &= 0x77; //no data whitening & no Mode Switch
+    *packet     = PHR[0];
+    *(packet+1) = PHR[1];
+    // change state
+    radio_vars.state = RADIOSTATE_LOADING_PACKET;
+    cc1200_spiStrobe( CC1200_SFTX, &radio_vars.radioStatusByte);
+    cc1200_spiWriteFifo(&radio_vars.radioStatusByte, packet, len, CC1200_FIFO_ADDR);
+    cc1200_spiReadReg(CC1200_NUM_TXBYTES, &radio_vars.radioStatusByte, &aux);
+    // change state
+    radio_vars.state = RADIOSTATE_PACKET_LOADED;
 
 }
 
