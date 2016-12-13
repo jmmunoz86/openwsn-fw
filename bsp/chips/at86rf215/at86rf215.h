@@ -4000,9 +4000,9 @@ static const registerSetting_t basic_settings_fsk_option1_FEC[]={
   {RG_BBC0_FSKC2,     0x40},
   {RG_BBC0_FSKC3,     0x85},
   {RG_BBC0_FSKC4,     0x0A}, //FEC enabled. IEEE MODE   
-  {RG_BBC0_FSKPE0,    0x74},
-  {RG_BBC0_FSKPE1,    0x7F},
-  {RG_BBC0_FSKPE2,    0x80}, 
+  {RG_BBC0_FSKPE0,    0x02},
+  {RG_BBC0_FSKPE1,    0x03},
+  {RG_BBC0_FSKPE2,    0xFC}, 
   {RG_BBC0_FSKPHRTX,  0x00},// No data whitening SFD0 used. 
 };
 
@@ -4026,9 +4026,9 @@ static const registerSetting_t basic_settings_fsk_option2_FEC[]={
   {RG_BBC0_FSKC2,     0x40},
   {RG_BBC0_FSKC3,     0x85},
   {RG_BBC0_FSKC4,     0x0A}, //FEC enabled. IEEE MODE
-  {RG_BBC0_FSKPE0,    0x13},
-  {RG_BBC0_FSKPE1,    0x29},
-  {RG_BBC0_FSKPE2,    0xC7},
+  {RG_BBC0_FSKPE0,    0x0E},
+  {RG_BBC0_FSKPE1,    0x0F},
+  {RG_BBC0_FSKPE2,    0xF0},
   {RG_BBC0_FSKPHRTX,  0x00},// No data whitening SFD0 used. 
 };
 
@@ -4051,10 +4051,10 @@ static const registerSetting_t basic_settings_fsk_option1[]={
   {RG_BBC0_FSKC1,     0x00},
   {RG_BBC0_FSKC2,     0x40},
   {RG_BBC0_FSKC3,     0x85},
-  {RG_BBC0_FSKC4,     0x0A}, //FEC enabled. IEEE MODE   
-  {RG_BBC0_FSKPE0,    0x74},
-  {RG_BBC0_FSKPE1,    0x7F},
-  {RG_BBC0_FSKPE2,    0x80}, 
+  {RG_BBC0_FSKC4,     0x00}, //FEC enabled. IEEE MODE   
+  {RG_BBC0_FSKPE0,    0x02},
+  {RG_BBC0_FSKPE1,    0x03},
+  {RG_BBC0_FSKPE2,    0xFC}, 
   {RG_BBC0_FSKPHRTX,  0x00},// No data whitening SFD0 used. 
 };
 
@@ -4068,7 +4068,7 @@ static const registerSetting_t basic_settings_fsk_option2[]={
   {RG_RF09_EDD,       0x7A},
   {RG_RF09_TXCUTC,    0x83}, 
   {RG_RF09_TXDFE,     0x94}, 
-  {RG_RF09_PAC,       0x7F},// Tx Power 5 bits >>. 0x64 = txPwr=>0x04, max: 0x1F.//
+  {RG_RF09_PAC,       0x64},// Tx Power 5 bits >>. 0x64 = txPwr=>0x04, max: 0x1F.//
   {RG_BBC0_IRQM,      0x1F},// TXFE, RXEM, RXAM, RXFE, RXFS interrupts enabled
   {RG_BBC1_IRQM,      0x00},
   {RG_BBC0_PC,        0x1D},// No FCS filter, 32 bits FCS, FSK. 
@@ -4077,10 +4077,10 @@ static const registerSetting_t basic_settings_fsk_option2[]={
   {RG_BBC0_FSKC1,     0x01},
   {RG_BBC0_FSKC2,     0x40},
   {RG_BBC0_FSKC3,     0x85},
-  {RG_BBC0_FSKC4,     0x0A}, //FEC enabled. IEEE MODE
-  {RG_BBC0_FSKPE0,    0x13},
-  {RG_BBC0_FSKPE1,    0x29},
-  {RG_BBC0_FSKPE2,    0xC7},
+  {RG_BBC0_FSKC4,     0x00}, //FEC enabled. IEEE MODE
+  {RG_BBC0_FSKPE0,    0x0E},
+  {RG_BBC0_FSKPE1,    0x0F},
+  {RG_BBC0_FSKPE2,    0xF0},
   {RG_BBC0_FSKPHRTX,  0x00},// No data whitening SFD0 used. 
 };
 /*
@@ -4133,7 +4133,7 @@ static const registerSetting_t basic_settings_oqpsk_rate1[] = {
 
 static const registerSetting_t basic_settings_oqpsk_rate2[] = {
     {RG_BBC0_PC,        0x17},  
-    {RG_BBC0_OQPSKPHRTX, 0x02}, // MR-OQPSK, rate mode 0
+    {RG_BBC0_OQPSKPHRTX, 0x02}, // MR-OQPSK, rate mode 1
     {RG_BBC0_OQPSKC0,   0x10},  // 100kchips/s, RC-0.8 shaping, direct-modulation enabled
 //  {RG_BBC0_OQPSKC1,   0x3F},  // MINIMUM preamble-detection sensitivities, rx-override disabled
 //  {RG_BBC0_OQPSKC2,   0x00},  // listen for MR-OQPSK frames only
@@ -4154,7 +4154,7 @@ static const registerSetting_t basic_settings_oqpsk_rate2[] = {
 
 static const registerSetting_t basic_settings_oqpsk_rate3[] = {
     {RG_BBC0_PC,        0x17},  
-    {RG_BBC0_OQPSKPHRTX, 0x04}, // MR-OQPSK, rate mode 0
+    {RG_BBC0_OQPSKPHRTX, 0x04}, // MR-OQPSK, rate mode 2
     {RG_BBC0_OQPSKC0,   0x10},  // 100kchips/s, RC-0.8 shaping, direct-modulation enabled
 //  {RG_BBC0_OQPSKC1,   0x3F},  // MINIMUM preamble-detection sensitivities, rx-override disabled
 //  {RG_BBC0_OQPSKC2,   0x00},  // listen for MR-OQPSK frames only
@@ -4175,7 +4175,7 @@ static const registerSetting_t basic_settings_oqpsk_rate3[] = {
 
 static const registerSetting_t basic_settings_oqpsk_rate4[] = {
     {RG_BBC0_PC,        0x17},  
-    {RG_BBC0_OQPSKPHRTX, 0x06}, // MR-OQPSK, rate mode 0
+    {RG_BBC0_OQPSKPHRTX, 0x06}, // MR-OQPSK, rate mode 3
     {RG_BBC0_OQPSKC0,   0x10},  // 100kchips/s, RC-0.8 shaping, direct-modulation enabled
 //  {RG_BBC0_OQPSKC1,   0x3F},  // MINIMUM preamble-detection sensitivities, rx-override disabled
 //  {RG_BBC0_OQPSKC2,   0x00},  // listen for MR-OQPSK frames only
