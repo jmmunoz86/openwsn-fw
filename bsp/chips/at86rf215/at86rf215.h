@@ -4032,6 +4032,32 @@ static const registerSetting_t basic_settings_fsk_option2_FEC[]={
   {RG_BBC0_FSKPHRTX,  0x00},// No data whitening SFD0 used. 
 };
 
+static const registerSetting_t basic_settings_fsk_option3_FEC []={  //TODO
+  {RG_RF09_CMD,       0x02}, //we make sure we are in the trxoff state
+  {RG_RF09_IRQM,      0x1F}, // TRXERR, BATLOW, EDC, TRXRDY, WAKEUP interrupts enabled
+  {RG_RF24_IRQM,      0x00},
+  {RG_RF09_RXBWC,     0x03}, //IF shift, 200 kHz bandwidth
+  {RG_RF09_RXDFE,     0x24}, //find the right values
+  {RG_RF09_AGCC,      0x01},
+  {RG_RF09_EDD,       0x7A},
+  {RG_RF09_TXCUTC,    0x84}, //find the right values
+  {RG_RF09_TXDFE,     0x12}, //find the right values
+  {RG_RF09_PAC,       0x64},// Tx Power 5 bits >>. 0x64 = txPwr=>0x04, max: 0x1F.
+  {RG_BBC0_IRQM,      0x1F},// TXFE, RXEM, RXAM, RXFE, RXFS interrupts enabled
+  {RG_BBC1_IRQM,      0x00},
+  {RG_BBC0_PC,        0x15},// No FCS filter, 32 bits FCS, FSK. 
+  {RG_BBC0_FSKDM,     0x03},//Direct modulation and Preemphasis enabled.
+  {RG_BBC0_FSKC0,     0xC1},
+  {RG_BBC0_FSKC1,     0x03},
+  {RG_BBC0_FSKC2,     0x00},
+  {RG_BBC0_FSKC3,     0x85},
+  {RG_BBC0_FSKC4,     0x0A},
+  {RG_BBC0_FSKPE0,    0x74},
+  {RG_BBC0_FSKPE1,    0x7F},
+  {RG_BBC0_FSKPE2,    0x80},  
+  {RG_BBC0_FSKPHRTX,  0x00},// No data whitening SFD0 used. 
+};
+
 static const registerSetting_t basic_settings_fsk_option1[]={
   {RG_RF09_CMD,       0x02}, //we make sure we are in the trxoff state
   {RG_RF09_IRQM,      0x1F}, // TRXERR, BATLOW, EDC, TRXRDY, WAKEUP interrupts enabled
@@ -4083,8 +4109,8 @@ static const registerSetting_t basic_settings_fsk_option2[]={
   {RG_BBC0_FSKPE2,    0xF0},
   {RG_BBC0_FSKPHRTX,  0x00},// No data whitening SFD0 used. 
 };
-/*
-static const registerSetting_t basic_settings_fsk_option3 []={  //DO NOT USE
+
+static const registerSetting_t basic_settings_fsk_option3 []={  //TODO
   {RG_RF09_CMD,       0x02}, //we make sure we are in the trxoff state
   {RG_RF09_IRQM,      0x1F}, // TRXERR, BATLOW, EDC, TRXRDY, WAKEUP interrupts enabled
   {RG_RF24_IRQM,      0x00},
@@ -4108,7 +4134,7 @@ static const registerSetting_t basic_settings_fsk_option3 []={  //DO NOT USE
   {RG_BBC0_FSKPE1,    0x7F},
   {RG_BBC0_FSKPE2,    0x80},  
   {RG_BBC0_FSKPHRTX,  0x00},// No data whitening SFD0 used. 
-};*/
+};
 //------------------------------------ OQPSK -----------------------------------//
 static const registerSetting_t basic_settings_oqpsk_rate1[] = {
     {RG_BBC0_PC,        0x17},  
@@ -4574,36 +4600,38 @@ static const registerSetting_t basic_settings_ofdm_4_mcs6[] = {  //TODO
   {RG_BBC0_OFDMPHRTX, 0x06},  
 };
 
-static const registerSetting_t* modulation_list_tx[] = {
-  {basic_settings_ofdm_1_mcs0},
-  {basic_settings_ofdm_2_mcs0},  
-  {basic_settings_ofdm_1_mcs1},
-  {basic_settings_ofdm_2_mcs1},
-  {basic_settings_ofdm_3_mcs1},  
-  {basic_settings_ofdm_1_mcs2},
-  {basic_settings_ofdm_2_mcs2},
-  {basic_settings_ofdm_3_mcs2},
-  {basic_settings_ofdm_4_mcs2},
-  {basic_settings_ofdm_1_mcs3},  
-  {basic_settings_ofdm_2_mcs3},
-  {basic_settings_ofdm_3_mcs3},
-  {basic_settings_ofdm_4_mcs3},
-  {basic_settings_ofdm_2_mcs4},
-  {basic_settings_ofdm_3_mcs4},
-  {basic_settings_ofdm_4_mcs4},
-  {basic_settings_ofdm_2_mcs5},
-  {basic_settings_ofdm_3_mcs5},
-  {basic_settings_ofdm_4_mcs5},
-  {basic_settings_ofdm_3_mcs6},
-  {basic_settings_ofdm_4_mcs6},
-  {basic_settings_fsk_option1_FEC},
-  {basic_settings_fsk_option2_FEC},
-  {basic_settings_fsk_option1},
-  {basic_settings_fsk_option2},
-  {basic_settings_oqpsk_rate1},
-  {basic_settings_oqpsk_rate2},
-  {basic_settings_oqpsk_rate3},
-  {basic_settings_oqpsk_rate4},
+static const registerSetting_t* modulation_list_tx[] = { 
+    {basic_settings_fsk_option1_FEC}, //01
+    {basic_settings_fsk_option2_FEC}, //02
+    {basic_settings_fsk_option1},     //03
+    {basic_settings_fsk_option2},     //04  
+    {basic_settings_ofdm_1_mcs0},     //05
+    {basic_settings_ofdm_2_mcs0},     //06
+    {basic_settings_ofdm_1_mcs1},     //07
+    {basic_settings_ofdm_2_mcs1},     //08
+    {basic_settings_ofdm_3_mcs1},     //09
+    {basic_settings_ofdm_1_mcs2},     //10
+    {basic_settings_ofdm_2_mcs2},     //11
+    {basic_settings_ofdm_3_mcs2},     //12
+    {basic_settings_ofdm_4_mcs2},     //13
+    {basic_settings_ofdm_1_mcs3},     //14
+    {basic_settings_ofdm_2_mcs3},     //15
+    {basic_settings_ofdm_3_mcs3},     //16
+    {basic_settings_ofdm_4_mcs3},     //17
+    {basic_settings_ofdm_2_mcs4},     //18    
+    {basic_settings_ofdm_3_mcs4},     //19
+    {basic_settings_ofdm_4_mcs4},     //20
+    {basic_settings_ofdm_2_mcs5},     //21
+    {basic_settings_ofdm_3_mcs5},     //22
+    {basic_settings_ofdm_4_mcs5},     //23
+    {basic_settings_ofdm_3_mcs6},     //24
+    {basic_settings_ofdm_4_mcs6},     //25
+    {basic_settings_oqpsk_rate1},     //26
+    {basic_settings_oqpsk_rate2},     //27
+    {basic_settings_oqpsk_rate3},     //28
+    {basic_settings_oqpsk_rate4},     //29
+//    {basic_settings_fsk_option1_FEC}, //30
+//    {basic_settings_fsk_option1},     //31
 };
 
 static const registerSetting_t* modulation_list_rx[] = {
